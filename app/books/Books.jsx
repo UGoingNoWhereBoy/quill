@@ -42,11 +42,11 @@ const Books = ({ books }) => {
       method: "POST",
       body: JSON.stringify({ bookID }),
     });
-    const newBooks = await FetchBooks();
+    const updatedBooks = await FetchBooks();
     if (res.ok) {
       setLoading(false);
       showSuccess();
-      setNewBooks(newBooks);
+      setNewBooks(updatedBooks);
     } else {
       setLoading(false);
       console.log(res);
