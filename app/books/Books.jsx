@@ -9,13 +9,11 @@ import { Nobooksfound } from "../Components/Errorpages";
 import Link from "next/link";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { FetchBooks } from "./../lib/get-books";
 
 const Books = ({ books }) => {
   const [newBooks, setNewBooks] = useState(books);
   const [isLoading, setLoading] = useState(false);
   const { data: session, status } = useSession();
-
   const toast = useRef(null);
 
   const showSuccess = () => {
@@ -35,6 +33,7 @@ const Books = ({ books }) => {
       life: 3000,
     });
   };
+
   const handleDelete = async (bookID) => {
     setLoading(true);
 
@@ -42,11 +41,15 @@ const Books = ({ books }) => {
       method: "POST",
       body: JSON.stringify({ bookID }),
     });
-    const updatedBooks = await FetchBooks();
     if (res.ok) {
+      const res = await fetch(`/api/post`, {
+        cache: "no-store",
+      });
+      const books = await res.json();
+      const { data } = books;
+      setNewBooks(data);
       setLoading(false);
       showSuccess();
-      setNewBooks(updatedBooks);
     } else {
       setLoading(false);
       console.log(res);
@@ -80,7 +83,7 @@ const Books = ({ books }) => {
 
                   <div>
                     <dt className="sr-only">Book Name</dt>
-                    <dd className="font-medium text-lg">{book.bookName}</dd>
+                    <dd className="font-medium text-lg">{book?.bookName}</dd>
                   </div>
                 </dl>
 
@@ -89,19 +92,19 @@ const Books = ({ books }) => {
                     <RiUserAddFill />
                     <div>
                       <p className="text-gray-500">Author</p>
-                      <p className="font-medium">{book.author}</p>
+                      <p className="font-medium">{book?.author}</p>
                     </div>
                   </div>
 
                   <div className="inline-flex items-center gap-1">
-                    {book.bookQty >= 10 ? (
+                    {book?.bookQty >= 10 ? (
                       <BsArrowUp className="text-green-500" />
                     ) : (
                       <BsArrowDown className="text-red-500" />
                     )}
                     <div>
                       <p className="text-gray-500">Quantity</p>
-                      <p className="font-medium">{book.bookQty}</p>
+                      <p className="font-medium">{book?.bookQty}</p>
                     </div>
                   </div>
 
@@ -109,17 +112,19 @@ const Books = ({ books }) => {
                     <ImPriceTag />
                     <div>
                       <p className="text-gray-500">Price</p>
-                      <p className="font-medium">${book.bookPrice.toFixed()}</p>
+                      <p className="font-medium">
+                        ${book?.bookPrice.toFixed()}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {session?.user?.id === book.userID && (
+              {session?.user?.id === book?.userID && (
                 <div className="flex justify-center mt-4">
                   <Toast ref={toast} />
                   <Button
-                    onClick={() => handleDelete(book._id)}
+                    onClick={() => handleDelete(book?._id)}
                     raised
                     outlined
                     loading={isLoading}
@@ -127,7 +132,7 @@ const Books = ({ books }) => {
                     severity="danger"
                     icon="pi pi-trash"
                   />
-                  <Link href={`/update/${book._id}`} className="ml-2">
+                  <Link href={`/update/${book?._id}`} className="ml-2">
                     <Button
                       icon="pi pi-file-edit"
                       outlined
