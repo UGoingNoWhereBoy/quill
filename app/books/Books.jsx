@@ -38,7 +38,7 @@ const Books = ({ books }) => {
   const handleDelete = async (bookID) => {
     setLoading(true);
 
-    const res = await fetch("/api/delete", {
+    const res = await fetch(`https://${process.env.VERCEL_URL}/api/delete`, {
       method: "POST",
       body: JSON.stringify({ bookID }),
     });
