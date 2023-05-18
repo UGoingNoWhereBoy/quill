@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { RxVercelLogo } from "react-icons/rx";
 import { TbBrandNextjs } from "react-icons/tb";
-import Brandsvg from "./Brandsvg";
 import { FiBookOpen } from "react-icons/fi";
 import { BsGithub } from "react-icons/bs";
 
